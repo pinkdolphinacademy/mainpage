@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PinkDolphin — Behaviour Intervention & Parent Coaching</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #1a1a2e;
+      line-height: 1.7;
+      background: #fff;
+    }
+
+    :root {
+      --pink:       #e91e8c;
+      --pink-light: #fce4f3;
+      --pink-mid:   #f48fb1;
+      --teal:       #00b4a6;
+      --teal-dark:  #00876e;
+      --teal-light: #e0f7f5;
+      --dark:       #1a1a2e;
+      --gray:       #6b7280;
+      --light:      #f9fafb;
+      --radius:     14px;
+      --shadow:     0 8px 40px rgba(0,0,0,.08);
+    }
+
+    /* ── Utilities ── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+    .section    { padding: 100px 0; }
+    .section-alt { background: var(--light); }
+    .tag {
+      display: inline-block;
+      background: var(--pink-light); color: var(--pink);
+      font-size: .72rem; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 18px;
+    }
+    .tag.teal { background: var(--teal-light); color: var(--teal-dark); }
+    h2.section-title {
+      font-size: clamp(1.9rem, 3.5vw, 2.7rem);
+      font-weight: 900; line-height: 1.15; margin-bottom: 18px;
+    }
+    p.section-sub {
+      font-size: 1.08rem; color: var(--gray);
+      max-width: 620px; margin-bottom: 60px;
+    }
+    .btn {
+      display: inline-block; padding: 14px 32px;
+      border-radius: 999px; font-weight: 700; font-size: .98rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn:hover { opacity: .86; transform: translateY(-2px); }
+    .btn-primary { background: var(--pink); color: #fff; }
+    .btn-outline  { background: transparent; color: var(--pink); border: 2px solid var(--pink); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,.93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #f0e0ed;
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      font-size: 1.45rem; font-weight: 900; color: var(--pink);
+      text-decoration: none; letter-spacing: -.5px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo span { color: var(--teal); }
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--dark);
+      font-weight: 500; font-size: .93rem; transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--pink); }
+    @media (max-width: 800px) { .nav-links { display: none; } }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 95vh; display: grid; place-items: center;
+      background: linear-gradient(150deg, #fff 0%, var(--pink-light) 50%, var(--teal-light) 100%);
+      padding: 80px 28px; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '🐬'; position: absolute; right: -40px; bottom: -20px;
+      font-size: 320px; opacity: .04; transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 860px; text-align: center; position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1.5px solid var(--pink-mid);
+      border-radius: 999px; padding: 7px 20px;
+      font-size: .83rem; font-weight: 700; color: var(--pink);
+      margin-bottom: 36px; box-shadow: 0 2px 16px rgba(233,30,140,.1);
+    }
+    .hero-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 900; line-height: 1.08;
+      margin-bottom: 28px; letter-spacing: -1.5px;
+    }
+    h1 .pk { color: var(--pink); }
+    h1 .tl { color: var(--teal); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.18rem); color: var(--gray);
+      max-width: 660px; margin: 0 auto 44px;
+    }
+    .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .hero-pills {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; margin-top: 56px;
+    }
+    .pill {
+      background: #fff; border: 1.5px solid #f0e0ed; border-radius: 999px;
+      padding: 7px 18px; font-size: .82rem; font-weight: 600; color: #444;
+      display: flex; align-items: center; gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    /* ── Mission banner ── */
+    .mission-banner {
+      background: linear-gradient(135deg, var(--pink), var(--teal));
+      color: #fff; padding: 64px 28px; text-align: center;
+    }
+    .mission-banner h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 900; margin-bottom: 14px; }
+    .mission-banner p  { font-size: 1.05rem; opacity: .92; max-width: 700px; margin: 0 auto; }
+
+    /* ── About ── */
+    .about-wrap {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    @media (max-width: 720px) { .about-wrap { grid-template-columns: 1fr; gap: 40px; } }
+    .about-card {
+      background: #fff; border-radius: var(--radius);
+      padding: 44px; border: 1.5px solid #f0e0ed; box-shadow: var(--shadow);
+    }
+    .about-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink-light), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem; margin-bottom: 20px;
+      border: 3px solid #fff; box-shadow: 0 4px 16px rgba(233,30,140,.15);
+    }
+    .about-name { font-size: 1.4rem; font-weight: 900; margin-bottom: 4px; }
+    .about-role { font-size: .85rem; font-weight: 700; color: var(--pink); margin-bottom: 20px; }
+    .about-card p { font-size: .92rem; color: var(--gray); margin-bottom: 10px; }
+    .chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .chip { font-size: .75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+    .chip.pk { background: var(--pink-light); color: var(--pink); }
+    .chip.tl { background: var(--teal-light); color: var(--teal-dark); }
+    .about-quote {
+      background: var(--pink-light);
+      border-left: 4px solid var(--pink);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 22px 26px; margin-top: 32px;
+      font-style: italic; color: #555; font-size: .96rem; line-height: 1.6;
+    }
+    .about-values { display: flex; flex-direction: column; gap: 20px; }
+    .value-item { display: flex; gap: 16px; align-items: flex-start; }
+    .value-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .value-item h4 { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
+    .value-item p  { font-size: .88rem; color: var(--gray); }
+
+    /* ── Services ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .svc-card {
+      background: #fff; border: 1.5px solid #f0e0ed;
+      border-radius: var(--radius); padding: 36px 32px;
+      transition: box-shadow .2s, transform .2s;
+      position: relative; overflow: hidden;
+    }
+    .svc-card::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--pink), var(--teal));
+      opacity: 0; transition: opacity .2s;
+    }
+    .svc-card:hover { box-shadow: 0 16px 48px rgba(233,30,140,.1); transform: translateY(-4px); }
+    .svc-card:hover::after { opacity: 1; }
+    .svc-card.featured { border-color: var(--pink-mid); }
+    .svc-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 20px;
+    }
+    .svc-badge {
+      display: inline-block; font-size: .68rem; font-weight: 800;
+      background: var(--pink); color: #fff;
+      padding: 2px 9px; border-radius: 999px;
+      vertical-align: middle; margin-left: 8px;
+    }
+    .svc-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; }
+    .svc-card p  { font-size: .93rem; color: var(--gray); margin-bottom: 20px; }
+    .svc-list { list-style: none; }
+    .svc-list li {
+      font-size: .88rem; color: #444; padding: 4px 0;
+      display: flex; gap: 9px; align-items: flex-start;
+    }
+    .svc-list li::before { content: '✓'; color: var(--teal); font-weight: 800; flex-shrink: 0; }
+
+    /* ── Parent Coaching Spotlight ── */
+    .coaching-spotlight {
+      background: var(--dark); color: #fff;
+      border-radius: 24px; padding: 72px 56px;
+    }
+    @media (max-width: 640px) { .coaching-spotlight { padding: 48px 28px; } }
+    .coaching-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start;
+    }
+    @media (max-width: 768px) { .coaching-grid { grid-template-columns: 1fr; gap: 36px; } }
+    .coaching-spotlight .tag { background: rgba(233,30,140,.2); color: var(--pink-mid); }
+    .coaching-spotlight h2 { color: #fff; margin-bottom: 20px; }
+    .coaching-spotlight .lead { color: rgba(255,255,255,.75); font-size: 1.05rem; line-height: 1.7; margin-bottom: 0; }
+    .coaching-system { display: flex; flex-direction: column; gap: 16px; }
+    .sys-item {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px; padding: 22px 24px;
+    }
+    .sys-item-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .sys-dot {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .sys-item h4 { font-size: .97rem; font-weight: 800; color: #fff; }
+    .sys-item p  { font-size: .86rem; color: rgba(255,255,255,.62); }
+    .session-flow { margin-top: 40px; }
+    .session-flow h3 { font-size: 1rem; font-weight: 800; color: rgba(255,255,255,.9); margin-bottom: 20px; }
+    .flow-steps { display: flex; flex-direction: column; gap: 10px; }
+    .flow-step { display: flex; align-items: flex-start; gap: 14px; }
+    .flow-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--pink); color: #fff;
+      font-size: .78rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 3px;
+    }
+    .flow-step-text { font-size: .88rem; color: rgba(255,255,255,.72); }
+    .flow-step-text strong { color: #fff; }
+    .role-banner {
+      background: rgba(233,30,140,.15); border: 1px solid rgba(233,30,140,.3);
+      border-radius: 12px; padding: 20px 24px; margin-top: 8px;
+    }
+    .role-banner-label {
+      font-size: .74rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--pink-mid); margin-bottom: 8px;
+    }
+    .role-banner p { color: #fff; font-size: .95rem; font-weight: 700; line-height: 1.5; }
+    .role-banner span { font-weight: 400; font-size: .87rem; color: rgba(255,255,255,.62); }
+
+    /* ── Process ── */
+    .process-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 24px; counter-reset: steps;
+    }
+    .proc-step {
+      background: #fff; border-radius: var(--radius);
+      padding: 32px 22px; text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,.05);
+      position: relative; counter-increment: steps;
+    }
+    .proc-step::before {
+      content: counter(steps);
+      position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--pink); color: #fff;
+      font-weight: 900; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .proc-icon { font-size: 2rem; margin-bottom: 14px; }
+    .proc-step h3 { font-size: .95rem; font-weight: 800; margin-bottom: 8px; }
+    .proc-step p  { font-size: .85rem; color: var(--gray); }
+
+    /* ── Vision roadmap ── */
+    .roadmap { display: flex; flex-direction: column; gap: 24px; }
+    .roadmap-item { display: flex; gap: 24px; align-items: flex-start; }
+    .roadmap-left { display: flex; flex-direction: column; align-items: center; }
+    .roadmap-circle {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .roadmap-line {
+      width: 2px; flex: 1; min-height: 32px;
+      background: linear-gradient(var(--pink-mid), var(--teal-light));
+      margin: 6px 0;
+    }
+    .roadmap-content {
+      flex: 1; background: #fff; border-radius: var(--radius);
+      padding: 28px 32px; border: 1.5px solid #f0e0ed;
+      box-shadow: 0 2px 16px rgba(0,0,0,.04);
+    }
+    .roadmap-phase {
+      font-size: .73rem; font-weight: 800; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--pink); margin-bottom: 6px;
+    }
+    .roadmap-content h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+    .roadmap-content p  { font-size: .9rem; color: var(--gray); }
+
+    /* ── FAQ ── */
+    .faq-list { max-width: 740px; }
+    .faq-item { border-bottom: 1px solid #f0e0ed; padding: 26px 0; }
+    .faq-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+    .faq-item p  { font-size: .92rem; color: var(--gray); }
+
+    /* ── Contact ── */
+    .contact-box {
+      background: linear-gradient(135deg, var(--pink), var(--teal));
+      border-radius: 24px; padding: 80px 56px;
+      text-align: center; color: #fff;
+    }
+    @media (max-width: 640px) { .contact-box { padding: 56px 28px; } }
+    .contact-box h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 16px; }
+    .contact-box > p { font-size: 1.05rem; opacity: .9; max-width: 540px; margin: 0 auto 44px; }
+    .contact-options { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .contact-opt {
+      background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.3);
+      border-radius: var(--radius); padding: 28px 36px;
+      color: #fff; text-decoration: none; text-align: center; min-width: 200px;
+      transition: background .2s;
+    }
+    .contact-opt:hover { background: rgba(255,255,255,.25); }
+    .contact-opt-icon { font-size: 2rem; margin-bottom: 10px; }
+    .contact-opt h4 { font-weight: 800; margin-bottom: 4px; }
+    .contact-opt p  { font-size: .85rem; opacity: .8; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.55);
+      padding: 48px 28px; text-align: center; font-size: .88rem;
+    }
+    .footer-logo { font-size: 1.5rem; font-weight: 900; color: var(--pink); text-decoration: none; }
+    .footer-logo span { color: var(--teal); }
+    footer p { margin-top: 14px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .footer-disclaimer {
+      margin-top: 24px; font-size: .78rem;
+      border-top: 1px solid rgba(255,255,255,.1); padding-top: 20px;
+      max-width: 680px; margin-left: auto; margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#">🐬 Pink<span>Dolphin</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#coaching">Parent Coaching</a></li>
+      <li><a href="#process">How It Works</a></li>
+      <li><a href="#vision">Vision</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="btn btn-primary" href="#contact">Book a Consultation</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="hero-dot"></span>
+      Evidence-Based · Behaviour Intervention · Parent Coaching
+    </div>
+    <h1>
+      A Place Where<br>
+      <span class="pk">Every Child</span><br>
+      <span class="tl">Belongs &amp; Thrives</span>
+    </h1>
+    <p class="hero-sub">
+      PinkDolphin offers individualised, evidence-based behaviour intervention and
+      structured parent coaching — helping children with communication delays and
+      learning differences reach their full potential, one meaningful step at a time.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#contact">Book a Free Consultation</a>
+      <a class="btn btn-outline" href="#services">Explore Our Services</a>
+    </div>
+    <div class="hero-pills">
+      <div class="pill">🎯 Individualised Programs</div>
+      <div class="pill">👨‍👩‍👧 Parent Coaching</div>
+      <div class="pill">📊 Progress Tracking</div>
+      <div class="pill">☕ Parent Community</div>
+      <div class="pill">🌏 Online Sessions Available</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Mission banner ── -->
+<div class="mission-banner">
+  <h2>Our belief: no child should be left behind.</h2>
+  <p>
+    We work with children and families — because the strategies that happen at home, at
+    the dinner table, and in everyday moments are just as powerful as anything that
+    happens in a session. Families who work with us are equipped, supported, and never
+    alone in the journey.
+  </p>
+</div>
+
+<!-- ── About ── -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-wrap">
+      <div>
+        <span class="tag">About Us</span>
+        <h2 class="section-title">A Specialist Who Thinks Beyond the Session</h2>
+        <p style="color:var(--gray); margin-bottom:18px;">
+          PinkDolphin is led by <strong>Mint</strong>, our founder and lead Behaviour
+          Interventionist &amp; Parent Coach. Mint provides individualised, evidence-based
+          intervention for children with communication delays, learning differences, and
+          behavioural challenges — with a focus on skills that make a real difference in
+          daily life.
+        </p>
+        <p style="color:var(--gray); margin-bottom:18px;">
+          What sets us apart is that our work does not stop at the child. We coach
+          caregivers to apply the same strategies at home — because consistent, confident
+          parenting is one of the most powerful forces in a child's growth.
+        </p>
+        <p style="color:var(--gray);">
+          Our approach is that of a strategist and coach — not just a therapist running
+          sessions. Every decision is grounded in careful observation, clear goal-setting,
+          and ongoing progress tracking.
+        </p>
+        <div class="about-quote">
+          "We don't just teach children skills. We build systems that help children — and
+          their families — grow independently."
+        </div>
+      </div>
+      <div>
+        <div class="about-card">
+          <div class="about-avatar">🐬</div>
+          <div class="about-name">Mint</div>
+          <div class="about-role">Founder · Behaviour Interventionist &amp; Parent Coach</div>
+          <div class="about-values">
+            <div class="value-item">
+              <div class="value-icon" style="background:var(--pink-light);">🔍</div>
+              <div>
+                <h4>Assessment First</h4>
+                <p>Every program begins with structured observation — so we know exactly what your child needs, and why.</p>
+              </div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon" style="background:var(--teal-light);">🎯</div>
+              <div>
+                <h4>Tailored to Your Child</h4>
+                <p>No two children learn the same way. Programs are built individually — never copied from a standard template.</p>
+              </div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon" style="background:var(--pink-light);">📈</div>
+              <div>
+                <h4>Progress You Can See</h4>
+                <p>We track progress every session so we always know what's working — and what to adjust next.</p>
+              </div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon" style="background:var(--teal-light);">🏠</div>
+              <div>
+                <h4>Home Is Part of Therapy</h4>
+                <p>Families leave every session with clear, practical strategies to use at home — not just something to hope for.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Services ── -->
+<section class="section section-alt" id="services">
+  <div class="container">
+    <span class="tag">Services</span>
+    <h2 class="section-title">What We Offer</h2>
+    <p class="section-sub">
+      Every service is built around one goal: meaningful, lasting progress — in the
+      centre, at home, and in life.
+    </p>
+    <div class="services-grid">
+
+      <div class="svc-card">
+        <div class="svc-icon" style="background:var(--pink-light);">🔍</div>
+        <h3>Child Skill Assessment</h3>
+        <p>Before anything begins, we take time to understand where your child is right now. Through careful observation we map out exactly what to build on — so every goal we set is the right one.</p>
+        <ul class="svc-list">
+          <li>Communication and language — how your child requests, labels, and responds</li>
+          <li>Learning readiness — attention, imitation, following instructions</li>
+          <li>Social and play skills</li>
+          <li>Behaviour patterns — what triggers them and what maintains them</li>
+          <li>Daily living skills for older children working toward independence</li>
+          <li>Written summary of findings and recommended goals shared with the family</li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon" style="background:var(--teal-light);">🎓</div>
+        <h3>1:1 Behaviour Intervention</h3>
+        <p>Individualised, structured sessions using evidence-based behaviour strategies — focused on the skills that matter most for your child's development right now.</p>
+        <ul class="svc-list">
+          <li>Teaching your child to ask for what they want and need</li>
+          <li>Building vocabulary — naming objects, actions, and feelings</li>
+          <li>Answering questions and holding simple conversations</li>
+          <li>Reducing challenging or disruptive behaviours</li>
+          <li>Supporting skills to transfer naturally to school, home, and community</li>
+        </ul>
+      </div>
+
+      <div class="svc-card featured">
+        <div class="svc-icon" style="background:var(--pink-light);">👨‍👩‍👧</div>
+        <h3>Parent Coaching <span class="svc-badge">Our Speciality</span></h3>
+        <p>Our structured coaching system empowers caregivers to become confident, consistent partners in their child's development — beyond the therapy room.</p>
+        <ul class="svc-list">
+          <li>3-part coaching system: goals → strategies → home practice</li>
+          <li>Live modelling and guided practice each session</li>
+          <li>1–2 home goals per week — practical, not overwhelming</li>
+          <li>Behaviour management strategies for daily routines</li>
+          <li>Weekly review and program adjustment</li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon" style="background:var(--teal-light);">☕</div>
+        <h3>Parent Community Sessions</h3>
+        <p>Raising a child with special needs can feel isolating. Our regular gatherings give families a space to share, connect, and support one another — without judgement.</p>
+        <ul class="svc-list">
+          <li>Regular parent sharing circles (morning sessions)</li>
+          <li>Practical strategies from the therapy room</li>
+          <li>Open Q&amp;A and discussion</li>
+          <li>Peer support and community connection</li>
+        </ul>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon" style="background:var(--pink-light);">🌏</div>
+        <h3>Online Coaching</h3>
+        <p>Can't attend in person? Our online parent coaching sessions are available via video call — same structure, same quality, from wherever you are.</p>
+        <ul class="svc-list">
+          <li>Video call coaching sessions</li>
+          <li>Progress reviews and goal updates remotely</li>
+          <li>Parent training resources and guides</li>
+          <li>Flexible scheduling for busy families</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Parent Coaching Spotlight ── -->
+<section class="section" id="coaching">
+  <div class="container">
+    <div class="coaching-spotlight">
+      <div class="coaching-grid">
+        <div>
+          <span class="tag">Why It Works</span>
+          <h2 class="section-title">Parent Coaching Is Our Core Differentiator</h2>
+          <p class="lead">
+            Many providers focus only on what happens inside a session.
+            We focus on what happens everywhere else — because that is where
+            real life takes place. You leave every session knowing exactly what
+            to do and why.
+          </p>
+
+          <div class="session-flow">
+            <h3>Every coaching session follows this format:</h3>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="flow-num">1</div>
+                <div class="flow-step-text"><strong>Review</strong> — What happened at home this week? What worked, what didn't? (5–10 min)</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num">2</div>
+                <div class="flow-step-text"><strong>Model</strong> — We demonstrate the skill or strategy clearly, step by step</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num">3</div>
+                <div class="flow-step-text"><strong>Parent practises</strong> — You try it with your child, with us coaching you live</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num">4</div>
+                <div class="flow-step-text"><strong>Feedback &amp; adjust</strong> — We refine it together until it feels natural and comfortable</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num">5</div>
+                <div class="flow-step-text"><strong>1–2 home goals only</strong> — Specific, realistic, and immediately useful this week</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="coaching-system">
+          <div class="sys-item">
+            <div class="sys-item-head">
+              <div class="sys-dot" style="background:var(--pink-light);">🎯</div>
+              <h4>Part A — Assessment → Goal System</h4>
+            </div>
+            <p>Through structured observation, we identify 3–5 priority goals per child: one language goal, one learning readiness goal, and one behaviour goal. Focused and realistic for parents to work on.</p>
+          </div>
+          <div class="sys-item">
+            <div class="sys-item-head">
+              <div class="sys-dot" style="background:var(--teal-light);">📋</div>
+              <h4>Part B — Program + Strategy System</h4>
+            </div>
+            <p>Each goal becomes a clear, parent-friendly plan: what to say, when to help, and what to do when your child gets it right. Simple enough to use at breakfast or at bedtime.</p>
+          </div>
+          <div class="sys-item">
+            <div class="sys-item-head">
+              <div class="sys-dot" style="background:rgba(233,30,140,.3);">🏠</div>
+              <h4>Part C — Parent Coaching System</h4>
+            </div>
+            <p>We coach caregivers to be the most consistent support their child has. Weekly updates keep goals progressing and difficulty increasing as your child grows.</p>
+          </div>
+
+          <div class="role-banner">
+            <div class="role-banner-label">Our role</div>
+            <p>
+              Strategist · Coach · Behaviour Consultant<br>
+              <span>Not just a therapist running trials.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Process ── -->
+<section class="section section-alt" id="process">
+  <div class="container">
+    <span class="tag">How It Works</span>
+    <h2 class="section-title">From First Contact to Real Progress</h2>
+    <p class="section-sub">
+      A clear, structured journey — so you always know what comes next and why.
+    </p>
+    <div class="process-grid">
+      <div class="proc-step">
+        <div class="proc-icon">📞</div>
+        <h3>Free Consultation</h3>
+        <p>We talk about your child's strengths, challenges, and your family's goals — no commitment needed.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">👀</div>
+        <h3>Getting to Know Your Child</h3>
+        <p>A parent interview and informal observation session give us the full picture before anything formal begins.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">🔍</div>
+        <h3>Skill Assessment</h3>
+        <p>We observe and assess your child's communication, learning readiness, and behaviour to understand exactly where they are and what to build on.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">🎯</div>
+        <h3>Goal Selection</h3>
+        <p>2–3 communication goals, 1 behaviour goal, 1 independence goal — chosen with the family, focused and achievable.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">📝</div>
+        <h3>Program Design</h3>
+        <p>Each goal becomes a clear, step-by-step strategy — simple enough for caregivers to implement every day at home.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">🏃</div>
+        <h3>Therapy Sessions</h3>
+        <p>1:1 sessions with progress tracked every session — so you always have a clear, honest picture of how your child is developing.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">🏠</div>
+        <h3>Parent Coaching</h3>
+        <p>We coach you to apply the same strategies at home — consistently, confidently, and effectively.</p>
+      </div>
+      <div class="proc-step">
+        <div class="proc-icon">📈</div>
+        <h3>Weekly Review</h3>
+        <p>Goals are updated, difficulty adjusted, and next steps planned — always based on what your child's progress shows us.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Vision ── -->
+<section class="section" id="vision">
+  <div class="container">
+    <span class="tag">Our Vision</span>
+    <h2 class="section-title">A Long-Term Mission for Every Child</h2>
+    <p class="section-sub">
+      PinkDolphin is more than a therapy service. It is the beginning of something
+      bigger — a community built around inclusion, independence, and lifelong opportunity.
+    </p>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-left">
+          <div class="roadmap-circle" style="background:var(--pink-light);">🌱</div>
+          <div class="roadmap-line"></div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Now — Phase 1</div>
+          <h3>1:1 Therapy &amp; Family Support</h3>
+          <p>Individualised behaviour intervention, structured parent coaching, and a growing community of families who support one another. Building the foundation — one child, one family at a time.</p>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-left">
+          <div class="roadmap-circle" style="background:var(--teal-light);">🌏</div>
+          <div class="roadmap-line"></div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 2</div>
+          <h3>Online Reach &amp; Parent Workshops</h3>
+          <p>Expanding access through online coaching and regular workshops — bringing practical, evidence-based support to families who cannot attend in person, wherever they are.</p>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-left">
+          <div class="roadmap-circle" style="background:var(--pink-light);">🤝</div>
+          <div class="roadmap-line"></div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 3</div>
+          <h3>Inclusive Centre &amp; Community Space</h3>
+          <p>A physical centre where children with and without special needs learn and grow side by side — and where parents find community, shared experience, and real support.</p>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-left">
+          <div class="roadmap-circle" style="background:var(--teal-light);">☕</div>
+          <div class="roadmap-line"></div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Phase 4</div>
+          <h3>Vocational Training &amp; Real Work Experience</h3>
+          <p>A café or snack space run with individuals with special needs — providing real work experience, independence skills, and the dignity of meaningful employment.</p>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-left">
+          <div class="roadmap-circle" style="background:var(--pink-light);">🐬</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">Future</div>
+          <h3>Workforce Inclusion &amp; PinkDolphin Community</h3>
+          <p>Connecting individuals with special needs to employers, supporting them into real jobs, and building a PinkDolphin community that advocates for a more inclusive world — because independence is the ultimate goal for every child we work with.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="section section-alt" id="faq">
+  <div class="container">
+    <span class="tag">FAQ</span>
+    <h2 class="section-title">Common Questions</h2>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <h3>What is a Behaviour Interventionist?</h3>
+        <p>A Behaviour Interventionist works with children to build skills and reduce challenging behaviours using structured, evidence-based strategies. Our work focuses specifically on communication, learning readiness, and behaviour — guided by careful observation and personalised goal planning.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What are your qualifications?</h3>
+        <p>Our lead practitioner, Mint, has several years of hands-on experience as a Senior ABA Therapist working with children with diverse learning and behavioural needs. We apply evidence-based behaviour strategies and use structured observation to guide our work. We are not clinical psychologists or licensed therapists — our scope is implementation, coaching, and guidance, not diagnosis.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What ages do you work with?</h3>
+        <p>Primarily young children aged 2–8, where early support has the greatest impact. We also work with older children who are still building foundational communication and daily living skills — developmental level matters more than age. We discuss the right fit together in the free consultation.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Does my child need a diagnosis to start?</h3>
+        <p>Not necessarily. While many children we support have an autism or developmental delay diagnosis, ABA strategies benefit any child with communication delays, learning difficulties, or behavioural challenges. We discuss each child's individual needs in the free consultation first.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What does a typical session look like?</h3>
+        <p>Sessions are structured but warm and playful — not clinical. We use your child's interests and motivation to make learning feel natural. Progress is recorded every session so we always have a clear, honest picture of how your child is developing.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What makes your parent coaching different?</h3>
+        <p>Most providers coach parents by handing over a handout. We coach live — you practise strategies in real time with us beside you, receive immediate feedback, and leave with 1–2 specific, achievable home goals. You become your child's most consistent and confident supporter.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>How soon will we see progress?</h3>
+        <p>Most families notice meaningful changes within 4–8 weeks when therapy sessions and home coaching are consistent. Progress depends on session frequency and caregiver follow-through — which is exactly why our parent coaching system is built into everything we do.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Can we do parent coaching without the 1:1 sessions?</h3>
+        <p>Yes. Parent coaching is available as a standalone service. Many families find it valuable to start here — building practical strategies before or alongside direct therapy. It is also a strong option if your child is already receiving therapy elsewhere and you want consistent home support.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact ── -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="contact-box">
+      <h2>Ready to Take the First Step?</h2>
+      <p>
+        Book a free 30-minute consultation. No commitment — just a real conversation
+        about how we can support your child and your family.
+      </p>
+      <div class="contact-options">
+        <a class="contact-opt" href="mailto:nobodysame@gmail.com">
+          <div class="contact-opt-icon">✉️</div>
+          <h4>Email Us</h4>
+          <p>nobodysame@gmail.com</p>
+        </a>
+        <a class="contact-opt" href="#contact">
+          <div class="contact-opt-icon">📱</div>
+          <h4>Book a Call</h4>
+          <p>Free 30-minute consultation</p>
+        </a>
+        <a class="contact-opt" href="#contact">
+          <div class="contact-opt-icon">🌏</div>
+          <h4>Online Sessions</h4>
+          <p>Available via video call</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <a class="footer-logo" href="#">Pink<span>Dolphin</span></a>
+  <p>
+    Behaviour Interventionist &amp; Parent Coach<br>
+    Evidence-Based Intervention · Individualised Programs · Family Support
+  </p>
+  <div class="footer-disclaimer">
+    All services are provided as behaviour intervention, guidance, and parent coaching — and are
+    not a substitute for clinical diagnosis or licensed psychological treatment. If you have
+    concerns about your child's development, please also consult a qualified medical professional.
+    © 2026 PinkDolphin. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>
